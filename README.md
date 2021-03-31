@@ -3,6 +3,7 @@
 ## Overview
 
 A MATLAB implementation of the ordering ICA  (orderingICA.m) and an example script (ex.m).
+A parallel implementation of the ordering ICA using Parallel Computing Toolbox (ParallelOrderingICA.m)
 
 ## Getting Started
 ~~~
