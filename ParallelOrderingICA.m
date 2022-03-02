@@ -1,22 +1,26 @@
 % Parallel Ordering ICA with MATLAB Implementation using Parallel Computing Toolbox
-% Author: Yoshitatsu Matsuda    Apr. 1 2021
+% Author: Yoshitatsu Matsuda    Feb. 20 2022
 
-function [W,Y] =  ParallelOrderingICA(X)
+function [W,Y] =  ParallelOrderingICA(X,R)
 % W - separating matrix
 % Y - estimated source
 % X - observed signal (mixture)
+% R - iterations of parallel processing
+if nargin < 2
+      R = 1;
+end
 
 [N,M]	= size(X);
-L = feature('numcores');
+L = feature('numcores') * R;
 Upsilon = @(u) -2*log((u+2)/2) + u;
 epsilon = 10^-6;
-maxIteration = 30;
+K = 30;
 % N - number of observed signals (N) 
 % M - sample size
 % L - number of multiple candidates
 % Upsilon - criterion of non-Gaussianity
 % epsilon - threshold of iterations in fast ICA
-% maxIteration - max number of iterations in fast ICA
+% K - max number of iterations in fast ICA
 
 % pre-whitening
 X = X - mean(X')' * ones(1,M);
@@ -44,7 +48,7 @@ Y = Y(ind,:);
 %fast ICA for a single candidate
     function [v,alpha] = single_estimation()
         v = randn(1,N);
-        for t = 1:maxIteration
+        for t = 1:K
             pv = v;
             Y = v*X;
             v = (X * ((Y') .^ 3))' / M - 3 * v;
